@@ -1,0 +1,60 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <!-- BepInEx Properties -->
+    <PropertyGroup>
+        <AssemblyName>Shuv</AssemblyName>
+        <Product>Shuv</Product>
+        <!-- Change to whatever version you're currently on. -->
+        <Version>0.1.3</Version>
+    </PropertyGroup>
+
+    <!-- Project Properties -->
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <RootNamespace>Shuv</RootNamespace>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <!-- Enable Nullable for better IDE null-checking -->
+    <PropertyGroup>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <!-- Set NuGet Sources -->
+    <PropertyGroup>
+        <RestoreAdditionalProjectSources>
+            https://api.nuget.org/v3/index.json;
+            https://nuget.bepinex.dev/v3/index.json
+        </RestoreAdditionalProjectSources>
+    </PropertyGroup>
+
+    <!-- Embed Debug Symbols for Easier Debugging -->
+    <PropertyGroup>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>embedded</DebugType>
+        <!--
+        Trim the project path to prevent players from potentially
+        viewing Private Information in stack traces.
+        -->
+        <PathMap>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)'))=./</PathMap>
+    </PropertyGroup>
+
+    <!-- Primary Package References -->
+    <ItemGroup>
+        <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all"/>
+        <PackageReference Include="BepInEx.Core" Version="5.*" PrivateAssets="all"/>
+        <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" PrivateAssets="all"/>
+        <PackageReference Include="UnityEngine.Modules" Version="2022.3.10" PrivateAssets="all"/>
+        <PackageReference Include="ContentWarning.GameLibs.Steam" Version="*-*" PrivateAssets="all"/>
+        
+        <Reference Include="$(CW_REFERENCES)/../../BepInEx/plugins/ContentSettings.dll"/>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all"/>
+    </ItemGroup>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+      <Exec Command="copy &quot;$(OutputPath)/$(AssemblyName).dll*&quot; &quot;$(CW_REFERENCES)/../../BepInEx/plugins/&quot;" />
+    </Target>
+</Project>
