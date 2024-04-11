@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using BepInEx;
 using BepInEx.Logging;
 using ContentSettings.API;
@@ -14,6 +15,18 @@ public class ShuvKeyCSetting : KeyCodeSetting, IExposedSetting {
     public string GetDisplayName() => "Hold to Shove";
 }
 
+public class ShuvEnemiesBoolSetting : EnumSetting, IExposedSetting {
+    public override void ApplyValue()
+    {
+        Shuv.Logger.LogInfo("Shove Enemies: " + GetChoices()[Value]);
+    }
+    protected override int GetDefaultValue() => 1;
+    public override List<string> GetChoices() => [ "No", "Yes" ];
+    public SettingCategory GetSettingCategory() => SettingCategory.Controls;
+    public string GetDisplayName() => "Shove Enemies";
+}
+
+[ContentWarningPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_VERSION, false)]
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 [BepInDependency("commander__cat.contentwarning.contentsettings")]
 public class Shuv : BaseUnityPlugin {
@@ -24,6 +37,7 @@ public class Shuv : BaseUnityPlugin {
     internal static Harmony? Harmony { get; set; }
 
     public static GlobalInputHandler.InputKey ShuvKey { get; private set; } = new GlobalInputHandler.InputKey();
+    public static ShuvEnemiesBoolSetting ShuvEnemies { get; private set; } = new ShuvEnemiesBoolSetting();
 
     private void Awake()
     {
@@ -36,6 +50,7 @@ public class Shuv : BaseUnityPlugin {
         ShuvKey.SetKeybind(shuvKey);
         
         SettingsLoader.RegisterSetting(shuvKey);
+        SettingsLoader.RegisterSetting(ShuvEnemies);
 
         Logger.LogInfo($"{MyPluginInfo.PLUGIN_GUID} v{MyPluginInfo.PLUGIN_VERSION} has loaded!");
     }
