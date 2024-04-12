@@ -6,6 +6,7 @@ using HarmonyLib;
 using JetBrains.Annotations;
 using UnityEngine;
 using Zorro.Settings;
+using Unity.Mathematics;
 
 namespace Shuv;
 
@@ -26,6 +27,14 @@ public class ShuvEnemiesBoolSetting : EnumSetting, IExposedSetting {
     public string GetDisplayName() => "Shove Enemies";
 }
 
+public class ShuvRagdollFloatSetting : FloatSetting, IExposedSetting {
+    public override void ApplyValue() {}
+    protected override float GetDefaultValue() => 1f;
+    protected override float2 GetMinMaxValue() => new float2(0.1f, 2.5f);
+    public SettingCategory GetSettingCategory() => SettingCategory.Controls;
+    public string GetDisplayName() => "Shove Strength";
+}
+
 [ContentWarningPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_VERSION, false)]
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 [BepInDependency("commander__cat.contentwarning.contentsettings")]
@@ -38,6 +47,7 @@ public class Shuv : BaseUnityPlugin {
 
     public static GlobalInputHandler.InputKey ShuvKey { get; private set; } = new GlobalInputHandler.InputKey();
     public static ShuvEnemiesBoolSetting ShuvEnemies { get; private set; } = new ShuvEnemiesBoolSetting();
+    public static ShuvRagdollFloatSetting RagdollTime { get; private set; } = new ShuvRagdollFloatSetting();
 
     private void Awake()
     {
@@ -51,6 +61,7 @@ public class Shuv : BaseUnityPlugin {
         
         SettingsLoader.RegisterSetting(shuvKey);
         SettingsLoader.RegisterSetting(ShuvEnemies);
+        SettingsLoader.RegisterSetting(RagdollTime);
 
         Logger.LogInfo($"{MyPluginInfo.PLUGIN_GUID} v{MyPluginInfo.PLUGIN_VERSION} has loaded!");
     }

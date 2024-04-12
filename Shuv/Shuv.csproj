@@ -1,10 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="./Shuv.Packaging.targets" />
     <!-- BepInEx Properties -->
     <PropertyGroup>
         <AssemblyName>Shuv</AssemblyName>
         <Product>Shuv</Product>
-        <!-- Change to whatever version you're currently on. -->
-        <Version>0.2.3</Version>
     </PropertyGroup>
 
     <!-- Project Properties -->
@@ -41,6 +40,7 @@
 
     <!-- Primary Package References -->
     <ItemGroup>
+        <PackageReference Include="MinVer" Version="5.0.0" PrivateAssets="all"/>
         <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all"/>
         <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" PrivateAssets="all"/>
         <PackageReference Include="BepInEx.Core" Version="5.*" PrivateAssets="all"/>
@@ -51,7 +51,21 @@
         <Reference Include="$(CW_REFERENCES)\Assembly-CSharp.dll" Publicize="true"/>
         <Reference Include="$(CW_REFERENCES)\Zorro*.dll"/>
         <Reference Include="$(CW_REFERENCES)\Photon*.dll" Publicize="true"/>
+        <Reference Include="$(CW_REFERENCES)\Unity.Mathematics.dll"/>
     </ItemGroup>
+    <!-- Set MinVer Tag & Prerelease Properties -->
+    <PropertyGroup>
+        <MinVerDefaultPreReleaseIdentifiers>dev</MinVerDefaultPreReleaseIdentifiers>
+        <MinVerTagPrefix>v</MinVerTagPrefix>
+    </PropertyGroup>
+
+    <!-- Set Mod Version with MinVer -->
+    <Target Name="SetModVersion" BeforeTargets="AddGeneratedFile" DependsOnTargets="MinVer">
+        <PropertyGroup>
+            <PlainVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch)</PlainVersion>
+            <BepInExPluginVersion>$(PlainVersion)</BepInExPluginVersion>
+        </PropertyGroup>
+    </Target>
 
     <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
         <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all"/>

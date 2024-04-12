@@ -1,34 +1,30 @@
 [config]
 schemaVersion = "0.0.1"
 
+[general]
+repository = "https://thunderstore.io"
+
 [package]
 namespace = "www_Day_Dream"
 name = "Shuv"
 description = "A Client-Side mod that lets you shove your friends."
-websiteUrl = "https://github.com/wwwDayDream/Shuv"
 containsNsfwContent = false
-
 [package.dependencies]
 BepInEx-BepInExPack = "5.4.2100"
 CommanderCat101-ContentSettings = "1.0.1"
 
 [build]
 icon = "icon.png"
-readme = "README.TS.md"
+readme = "../../README.md"
 outdir = "../dist"
 
 [[build.copy]]
-source = "../LICENSE"
-target = "/"
-
-[[build.copy]]
-source = "../Shuv/bin/Release/netstandard2.1/Shuv.dll"
+source = "../bin/Release/netstandard2.1/Shuv.dll"
 target = "/BepInEx/plugins/Shuv/"
 
+# "bepinex", "clientside" 
 [publish]
 communities = [ "content-warning" ]
-repository = "https://thunderstore.io"
-
-# "bepinex", "clientside" 
 [publish.categories]
-content-warning = [ "mods", "misc" ] 
+content-warning = [ "mods" ]
+# For a list of valid tags, look at the slug values in https://thunderstore.io/api/experimental/community/content-warning/category/

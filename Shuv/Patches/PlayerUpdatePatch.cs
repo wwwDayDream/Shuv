@@ -13,7 +13,6 @@ namespace Shuv.Patches;
 public class PlayerUpdatePatch {
     private static float Charge { get; set; } = 0f;
     private const float ChargePower = 10f;
-    private const float MaxFallTime = 1.5f;
     
     [HarmonyPatch(nameof(Player.Update))]
     [HarmonyPostfix]
@@ -45,7 +44,7 @@ public class PlayerUpdatePatch {
                     if (!player.ai || Shuv.ShuvEnemies.Value == 1)
                     {
                         player.CallTakeDamageAndAddForceAndFall(0f, __instance.refs.cameraPos.forward * Charge * 
-                                                                    (ChargePower / (player.ai ? 4f : 1f)), Charge * MaxFallTime + 0.5f);
+                                                                    (ChargePower / (player.ai ? 4f : 1f)), Charge * Shuv.RagdollTime.Value + 0.5f);
                         player.CallMakeSound(0);
                     }
                 }
