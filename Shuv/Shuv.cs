@@ -1,52 +1,28 @@
-using System.Collections.Generic;
 using BepInEx;
 using BepInEx.Logging;
 using ContentSettings.API;
-using ContentSettings.API.Settings;
 using HarmonyLib;
 using JetBrains.Annotations;
+using MyceliumNetworking;
+using Shuv.Settings;
 using UnityEngine;
-using Zorro.Settings;
-using Unity.Mathematics;
 
 namespace Shuv;
 
-public class ShuvKeyCSetting : KeyCodeSetting, ICustomSetting {
-    public override KeyCode GetDefaultKey() => KeyCode.E;
-    public string GetDisplayName() => "Hold to Shove";
+internal static class ShuvConfig {
+    internal static bool ShoveEnemies { get; set; } = false;
+    internal static float RagdollTime { get; set; } = 1.5f;
+    internal static float Strength { get; set; } = 1f;
 }
 
-public class ShuvEnemiesBoolSetting : EnumSetting, ICustomSetting {
-    public override void ApplyValue()
-    {
-        Shuv.Logger.LogInfo("Shove Enemies: " + GetChoices()[Value]);
-    }
-    public override int GetDefaultValue() => 1;
-    public override List<string> GetChoices() => [ "No", "Yes" ];
-    public string GetDisplayName() => "Shove Enemies";
-}
-
-public class ShuvRagdollFloatSetting : FloatSetting, ICustomSetting {
-    public override void ApplyValue() {}
-    public override float GetDefaultValue() => 1f;
-    public override float2 GetMinMaxValue() => new float2(0.1f, 2.5f);
-    public string GetDisplayName() => "Ragdoll Time";
-}
-
-public class ShuvPowerFloatSetting : FloatSetting, ICustomSetting {
-    public override void ApplyValue() {}
-    public override float GetDefaultValue() => 10f;
-    public override float2 GetMinMaxValue() => new float2(1f, 100f);
-    public string GetDisplayName() => "Shove Strength";
-}
 #if DEBUG
 [ContentWarningPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_VERSION, true)]
 #else
 [ContentWarningPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_VERSION, false)]
 #endif
-[BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
+[BepInAutoPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 [BepInDependency(ContentSettings.MyPluginInfo.PLUGIN_GUID)]
-public class Shuv : BaseUnityPlugin {
+public partial class Shuv : BaseUnityPlugin {
     public static Shuv Instance { get; private set; } = null!;
     [UsedImplicitly]
     internal new static ManualLogSource Logger { get; private set; } = null!;
@@ -54,6 +30,7 @@ public class Shuv : BaseUnityPlugin {
     internal static Harmony? Harmony { get; set; }
 
     public static GlobalInputHandler.InputKey ShuvKey { get; private set; } = new GlobalInputHandler.InputKey();
+    
     public static ShuvEnemiesBoolSetting ShuvEnemies { get; private set; } = new ShuvEnemiesBoolSetting();
     public static ShuvRagdollFloatSetting RagdollTime { get; private set; } = new ShuvRagdollFloatSetting();
     public static ShuvPowerFloatSetting ShuvStrength { get; private set; } = new ShuvPowerFloatSetting();
@@ -72,8 +49,34 @@ public class Shuv : BaseUnityPlugin {
         SettingsLoader.RegisterSetting("Modded", "Shuv", ShuvEnemies);
         SettingsLoader.RegisterSetting("Modded", "Shuv", RagdollTime);
         SettingsLoader.RegisterSetting("Modded", "Shuv", ShuvStrength);
+        
+        MyceliumNetwork.RegisterLobbyDataKey("Shuv_Enemies");
+        MyceliumNetwork.RegisterLobbyDataKey("Shuv_Ragdoll");
+        MyceliumNetwork.RegisterLobbyDataKey("Shuv_Strength");
+        
+        MyceliumNetwork.LobbyEntered += () =>
+        {
+            if (MyceliumNetwork.IsHost)
+            {
+                MyceliumNetwork.SetLobbyData("Shuv_Enemies", ShuvEnemies.Value);
+                MyceliumNetwork.SetLobbyData("Shuv_Ragdoll", RagdollTime.Value);
+                MyceliumNetwork.SetLobbyData("Shuv_Strength", ShuvStrength.Value);
+            }
+            else
+                TakeLobbyDataToConfig();
+        };
+        MyceliumNetwork.LobbyDataUpdated += (_) => TakeLobbyDataToConfig();
 
         Logger.LogInfo($"{MyPluginInfo.PLUGIN_GUID} v{MyPluginInfo.PLUGIN_VERSION} has loaded!");
+    }
+
+    private static void TakeLobbyDataToConfig()
+    {
+        if (MyceliumNetwork.IsHost) return;
+        ShuvConfig.ShoveEnemies = MyceliumNetwork.GetLobbyData<int>("Shuv_Enemies") == 1;
+        ShuvConfig.RagdollTime = MyceliumNetwork.GetLobbyData<float>("Shuv_Ragdoll");
+        ShuvConfig.Strength = MyceliumNetwork.GetLobbyData<float>("Shuv_Strength");
+        Shuv.Logger.LogWarning($"Shove Power Updated By Network: {ShuvConfig.Strength} InLobby {MyceliumNetwork.InLobby} | IsHost {MyceliumNetwork.IsHost}");
     }
 
     internal static void Patch()

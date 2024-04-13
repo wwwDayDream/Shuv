@@ -40,10 +40,10 @@ public class PlayerUpdatePatch {
                 var player = rayHit.collider.transform.parent.GetComponentInParent<Player>();
                 if (player != null)
                 {
-                    if (!player.ai || Shuv.ShuvEnemies.Value == 1)
+                    if (!player.ai || ShuvConfig.ShoveEnemies)
                     {
                         player.CallTakeDamageAndAddForceAndFall(0f, __instance.refs.cameraPos.forward * Charge * 
-                                                                    (Shuv.ShuvStrength.Value / (player.ai ? 4f : 1f)), Charge * Shuv.RagdollTime.Value + 0.5f);
+                                                                    (ShuvConfig.Strength / (player.ai ? 4f : 1f)), Charge * ShuvConfig.RagdollTime + 0.5f);
                         player.CallMakeSound(0);
                     }
                 }
