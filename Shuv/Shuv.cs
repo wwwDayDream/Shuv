@@ -34,10 +34,13 @@ public class ShuvRagdollFloatSetting : FloatSetting, IExposedSetting {
     public SettingCategory GetSettingCategory() => SettingCategory.Controls;
     public string GetDisplayName() => "Shove Strength";
 }
-
+#if DEBUG
+[ContentWarningPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_VERSION, true)]
+#else
 [ContentWarningPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_VERSION, false)]
+#endif
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
-[BepInDependency("commander__cat.contentwarning.contentsettings")]
+[BepInDependency("CommanderCat101.ContentSettings")]
 public class Shuv : BaseUnityPlugin {
     public static Shuv Instance { get; private set; } = null!;
     [UsedImplicitly]

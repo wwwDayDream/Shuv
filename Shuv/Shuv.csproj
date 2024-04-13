@@ -47,7 +47,7 @@
         <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" PrivateAssets="all"/>
         <PackageReference Include="UnityEngine.Modules" Version="2022.3.10" PrivateAssets="all"/>
         
-        <Reference Include="$(CW_REFERENCES)/../../BepInEx/plugins/ContentSettings.dll"/>
+        <Reference Include="$(CW_REFERENCES)/../../BepInEx/plugins/CommanderCat101.ContentSettings.dll"/>
         <Reference Include="$(CW_REFERENCES)\Assembly-CSharp.dll" Publicize="true"/>
         <Reference Include="$(CW_REFERENCES)\Zorro*.dll"/>
         <Reference Include="$(CW_REFERENCES)\Photon*.dll" Publicize="true"/>
@@ -71,7 +71,7 @@
         <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all"/>
     </ItemGroup>
 
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$(CI) == ''">
       <Exec Command="copy &quot;$(OutputPath)/$(AssemblyName).dll*&quot; &quot;$(CW_REFERENCES)/../../BepInEx/plugins/&quot;" />
     </Target>
 </Project>
