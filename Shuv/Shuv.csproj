@@ -46,12 +46,8 @@
         <PackageReference Include="BepInEx.Core" Version="5.*" PrivateAssets="all"/>
         <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" PrivateAssets="all"/>
         <PackageReference Include="UnityEngine.Modules" Version="2022.3.10" PrivateAssets="all"/>
-        
-        <Reference Include="$(CW_REFERENCES)/../../BepInEx/plugins/CommanderCat101.ContentSettings.dll"/>
-        <Reference Include="$(CW_REFERENCES)\Assembly-CSharp.dll" Publicize="true"/>
-        <Reference Include="$(CW_REFERENCES)\Zorro*.dll"/>
-        <Reference Include="$(CW_REFERENCES)\Photon*.dll" Publicize="true"/>
-        <Reference Include="$(CW_REFERENCES)\Unity.Mathematics.dll"/>
+        <PackageReference Include="CommanderCat101.ContentSettings" Version="1.1.0" PrivateAssets="all"/>
+        <PackageReference Include="ContentWarning.GameLibs.Steam" Version="0.1.9-b-ngd.0" PrivateAssets="all" Publicize="true"/>
     </ItemGroup>
     <!-- Set MinVer Tag & Prerelease Properties -->
     <PropertyGroup>
