@@ -32,7 +32,7 @@ public class PlayerUpdatePatch {
         if (!Shuv.ShuvKey.GetKey() && Charge > 0.25f)
         {
             
-            var rayHit = HelperFunctions.LineCheck(__instance.refs.cameraPos.position, __instance.refs.cameraPos.position + __instance.refs.cameraPos.forward * 2f,
+            var rayHit = HelperFunctions.LineCheck(__instance.refs.cameraPos.position + __instance.refs.cameraPos.forward * 0.05f, __instance.refs.cameraPos.position + __instance.refs.cameraPos.forward * 2f,
                 HelperFunctions.LayerType.All, 0.5f);
                 
             if (rayHit.collider != null)
