@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using BepInEx;
 using HarmonyLib;
@@ -31,21 +32,25 @@ public class PlayerUpdatePatch {
         }
         if (!Shuv.ShuvKey.GetKey() && Charge > 0.25f)
         {
+
+            var ray = new Ray(__instance.refs.cameraPos.position, __instance.refs.cameraPos.forward);
+            var hits = Physics.RaycastAll(ray, 2f, HelperFunctions.GetMask(HelperFunctions.LayerType.All));
+            if (hits == null) return;
             
-            var rayHit = HelperFunctions.LineCheck(__instance.refs.cameraPos.position + __instance.refs.cameraPos.forward * 0.05f, __instance.refs.cameraPos.position + __instance.refs.cameraPos.forward * 2f,
-                HelperFunctions.LayerType.All, 0.5f);
-                
-            if (rayHit.collider != null)
+            RaycastHit hit = default;
+            Player? hitPlayer = null;
+            foreach (var raycastHit in hits)
+                if ((hitPlayer = raycastHit.collider.transform.parent.GetComponentInParent<Player>()) && !hitPlayer.IsLocal)
+                    break;
+
+            if (hitPlayer == null || !hitPlayer) return;
+            if (hitPlayer != null)
             {
-                var player = rayHit.collider.transform.parent.GetComponentInParent<Player>();
-                if (player != null)
+                if (!hitPlayer.ai || ShuvConfig.ShoveEnemies)
                 {
-                    if (!player.ai || ShuvConfig.ShoveEnemies)
-                    {
-                        player.CallTakeDamageAndAddForceAndFall(0f, __instance.refs.cameraPos.forward * Charge * 
-                                                                    (ShuvConfig.Strength / (player.ai ? 4f : 1f)), Charge * ShuvConfig.RagdollTime + 0.5f);
-                        player.CallMakeSound(0);
-                    }
+                    hitPlayer.CallTakeDamageAndAddForceAndFall(0f, __instance.refs.cameraPos.forward * Charge * 
+                                                                   (ShuvConfig.Strength / (hitPlayer.ai ? 4f : 1f)), Charge * ShuvConfig.RagdollTime + 0.5f);
+                    hitPlayer.CallMakeSound(0);
                 }
             }
             Charge = 0f;
