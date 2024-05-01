@@ -1,3 +1,4 @@
+using System;
 using BepInEx;
 using BepInEx.Logging;
 using ContentSettings.API;
@@ -79,6 +80,12 @@ public partial class Shuv : BaseUnityPlugin {
         MyceliumNetwork.LobbyDataUpdated += (_) => TakeLobbyDataToConfig();
 
         Logger.LogInfo($"{PLUGIN_GUID} v{PLUGIN_VERSION} has loaded!");
+    }
+
+    private void OnDestroy()
+    {
+        Unpatch();
+        Logger.LogInfo($"{PLUGIN_GUID} v{PLUGIN_VERSION} has unloaded!");
     }
 
     private static void TakeLobbyDataToConfig()
