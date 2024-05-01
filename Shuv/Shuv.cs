@@ -39,7 +39,6 @@ public partial class Shuv : BaseUnityPlugin {
     public static ShuvPowerFloatSetting ShuvStrength { get; private set; } = new ShuvPowerFloatSetting();
     public static ShuvDamageIntSetting ShuvDamage { get; private set; } = new ShuvDamageIntSetting();
     
-    // set PLUGIN_GUID
     public const string PLUGIN_GUID = "wwwDayDream.Shuv";
     public const string PLUGIN_NAME = "Shuv";
     public const string PLUGIN_VERSION = "1.1.1";
