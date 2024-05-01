@@ -19,6 +19,8 @@ public class PlayerUpdatePatch {
     private static void CheckForShuvBinding(Player __instance)
     {
         if (!__instance.refs.view.IsMine) return;
+        if(__instance.data.health <= 0f || __instance.data.dead) return; // Don't allow shoving when dead, we use a '.health' check because the Defibrillator doesn't change '.dead' to false (iirc)
+        // If the Defibrillator does change '.dead' to false, feel free to remove the '.health' check
 
         if (Shuv.ShuvKey.GetKey() && __instance.refs != null && __instance.refs.items != null)
         {
@@ -32,24 +34,34 @@ public class PlayerUpdatePatch {
         }
         if (!Shuv.ShuvKey.GetKey() && Charge > 0.25f)
         {
-
             var ray = new Ray(__instance.refs.cameraPos.position, __instance.refs.cameraPos.forward);
             var hits = Physics.RaycastAll(ray, 2f, HelperFunctions.GetMask(HelperFunctions.LayerType.All));
-            if (hits == null) return;
+            if (hits == null)
+            {
+                Charge = 0f;
+                return;
+            }
             
             RaycastHit hit = default;
             Player? hitPlayer = null;
             foreach (var raycastHit in hits)
-                if ((hitPlayer = raycastHit.collider.transform.parent.GetComponentInParent<Player>()) && !hitPlayer.IsLocal)
+                if ((hitPlayer = raycastHit.collider.transform.parent.GetComponentInParent<Player>()) && !hitPlayer.IsLocal && !(hitPlayer == __instance))
                     break;
-
-            if (hitPlayer == null || !hitPlayer) return;
+            
+            Shuv.Logger.LogInfo("Trying shove...");
+            if (hitPlayer == null || !hitPlayer)
+            {
+                Charge = 0f;
+                return;
+            }
             if (hitPlayer != null)
             {
+                Shuv.Logger.LogInfo(hitPlayer.ai ? "Shoving AI" : "Shoving Player");
                 if (!hitPlayer.ai || ShuvConfig.ShoveEnemies)
                 {
-                    hitPlayer.CallTakeDamageAndAddForceAndFall(0f, __instance.refs.cameraPos.forward * Charge * 
-                                                                   (ShuvConfig.Strength / (hitPlayer.ai ? 4f : 1f)), Charge * ShuvConfig.RagdollTime + 0.5f);
+                    hitPlayer.CallTakeDamageAndAddForceAndFall(ShuvConfig.Damage, 
+                        __instance.refs.cameraPos.forward * Charge * (ShuvConfig.Strength / (hitPlayer.ai ? 4f : 1f)), 
+                        Charge * ShuvConfig.RagdollTime + 0.5f);
                     hitPlayer.CallMakeSound(0);
                 }
             }
