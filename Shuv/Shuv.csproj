@@ -70,8 +70,8 @@
     </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$(CI) == ''">
-<!--      <Exec Command="copy &quot;$(OutputPath)/$(AssemblyName).dll&quot; &quot;$(CW_REFERENCES)/../../BepInEx/plugins/&quot;" />-->
-<!--      <Exec Command="copy &quot;$(OutputPath)/CommanderCat101.ContentSettings.dll&quot; &quot;$(CW_REFERENCES)/../../BepInEx/plugins/&quot;" />-->
-<!--      <Exec Command="copy &quot;$(OutputPath)/com.rlabrecque.steamworks.net.dll&quot; &quot;$(CW_REFERENCES)/../../BepInEx/plugins/&quot;" />-->
+      <Exec Command="copy &quot;$(OutputPath)/$(AssemblyName).dll&quot; &quot;$(CW_REFERENCES)/../../BepInEx/plugins/&quot;" />
+      <Exec Command="copy &quot;$(OutputPath)/CommanderCat101.ContentSettings.dll&quot; &quot;$(CW_REFERENCES)/../../BepInEx/plugins/&quot;" />
+      <Exec Command="copy &quot;$(OutputPath)/com.rlabrecque.steamworks.net.dll&quot; &quot;$(CW_REFERENCES)/../../BepInEx/plugins/&quot;" />
     </Target>
 </Project>
