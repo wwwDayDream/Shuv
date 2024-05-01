@@ -42,7 +42,7 @@ public partial class Shuv : BaseUnityPlugin {
     // set PLUGIN_GUID
     public const string PLUGIN_GUID = "wwwDayDream.Shuv";
     public const string PLUGIN_NAME = "Shuv";
-    public const string PLUGIN_VERSION = "1.0.0";
+    public const string PLUGIN_VERSION = "1.1.1";
 
     private void Awake()
     {
