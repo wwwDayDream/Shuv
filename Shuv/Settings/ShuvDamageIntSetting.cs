@@ -15,6 +15,6 @@ public class ShuvDamageIntSetting : IntSetting, ICustomSetting {
     }
     
     protected override int GetDefaultValue() => 0;
-    protected override (int, int) GetMinMaxValue() => (0, 25);
+    protected override (int, int) GetMinMaxValue() => (0, 10);
     public string GetDisplayName() => "Shove Damage";
 }
