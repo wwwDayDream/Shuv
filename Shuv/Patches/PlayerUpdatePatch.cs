@@ -45,10 +45,10 @@ public class PlayerUpdatePatch {
             RaycastHit hit = default;
             Player? hitPlayer = null;
             foreach (var raycastHit in hits)
-                if ((hitPlayer = raycastHit.collider.transform.parent.GetComponentInParent<Player>()) && !hitPlayer.IsLocal && !(hitPlayer == __instance))
+                if ((hitPlayer = raycastHit.collider.transform.parent.GetComponentInParent<Player>()) && !hitPlayer.IsLocal)
                     break;
             
-            Shuv.Logger.LogInfo("Trying shove...");
+            Shuv.Logger.LogDebug("Trying shove...");
             if (hitPlayer == null || !hitPlayer)
             {
                 Charge = 0f;
@@ -56,7 +56,13 @@ public class PlayerUpdatePatch {
             }
             if (hitPlayer != null)
             {
-                Shuv.Logger.LogInfo(hitPlayer.ai ? "Shoving AI" : "Shoving Player");
+                Shuv.Logger.LogDebug(hitPlayer.ai ? "Shoving AI" : "Shoving Player");
+                if (hitPlayer == __instance)
+                {
+                    Shuv.Logger.LogWarning("Just prevented self-shove!");
+                    Charge = 0f;
+                    return;
+                }
                 if (!hitPlayer.ai || ShuvConfig.ShoveEnemies)
                 {
                     hitPlayer.CallTakeDamageAndAddForceAndFall(ShuvConfig.Damage, 
