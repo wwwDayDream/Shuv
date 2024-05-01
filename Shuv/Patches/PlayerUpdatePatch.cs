@@ -49,7 +49,7 @@ public class PlayerUpdatePatch {
             RaycastHit hit = default;
             Player? hitPlayer = null;
             foreach (var raycastHit in hits)
-                if ((hitPlayer = raycastHit.collider.transform.parent.GetComponentInParent<Player>()) && !hitPlayer.IsLocal)
+                if ((hitPlayer = raycastHit.collider.transform.parent.GetComponentInParent<Player>()) && !hitPlayer.IsLocal) // keep in mind, !hitPlayer.IsLocal isn't gonna work here; I tried '&& !(hitPlayer == __instance))' and that didn't work for some reason.
                     break;
             
             Shuv.Logger.LogDebug("Trying shove...");
