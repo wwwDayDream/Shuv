@@ -4,9 +4,8 @@ using BepInEx.Logging;
 using ContentSettings.API;
 using HarmonyLib;
 using JetBrains.Annotations;
-using MyceliumNetworking;
 using Shuv.Settings;
-using UnityEngine;
+using MyceliumNetworking;
 
 namespace Shuv;
 
@@ -19,12 +18,13 @@ internal static class ShuvConfig {
 }
 
 #if DEBUG
-[ContentWarningPlugin(Shuv.PLUGIN_GUID, Shuv.PLUGIN_VERSION, true)]
+[ContentWarningPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_VERSION, true)]
 #else
-[ContentWarningPlugin(Shuv.PLUGIN_GUID, Shuv.PLUGIN_VERSION, false)]
+[ContentWarningPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_VERSION, false)]
 #endif
-[BepInAutoPlugin(Shuv.PLUGIN_GUID, Shuv.PLUGIN_NAME, Shuv.PLUGIN_VERSION)]
+[BepInAutoPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 [BepInDependency(ContentSettings.MyPluginInfo.PLUGIN_GUID)]
+[BepInDependency(MyceliumNetworking.MyPluginInfo.PLUGIN_GUID)]
 public partial class Shuv : BaseUnityPlugin {
     public static Shuv Instance { get; private set; } = null!;
     [UsedImplicitly]
@@ -39,10 +39,6 @@ public partial class Shuv : BaseUnityPlugin {
     public static ShuvPowerFloatSetting ShuvStrength { get; private set; } = new ShuvPowerFloatSetting();
     public static ShuvDamageIntSetting ShuvDamage { get; private set; } = new ShuvDamageIntSetting();
     
-    public const string PLUGIN_GUID = "wwwDayDream.Shuv";
-    public const string PLUGIN_NAME = "Shuv";
-    public const string PLUGIN_VERSION = "1.1.1";
-
     private void Awake()
     {
         Logger = base.Logger;
@@ -78,13 +74,13 @@ public partial class Shuv : BaseUnityPlugin {
         };
         MyceliumNetwork.LobbyDataUpdated += (_) => TakeLobbyDataToConfig();
 
-        Logger.LogInfo($"{PLUGIN_GUID} v{PLUGIN_VERSION} has loaded!");
+        Logger.LogInfo($"{MyPluginInfo.PLUGIN_GUID} v{MyPluginInfo.PLUGIN_VERSION} has loaded!");
     }
 
     private void OnDestroy()
     {
         Unpatch();
-        Logger.LogInfo($"{PLUGIN_GUID} v{PLUGIN_VERSION} has unloaded!");
+        Logger.LogInfo($"{MyPluginInfo.PLUGIN_GUID} v{MyPluginInfo.PLUGIN_VERSION} has unloaded!");
     }
 
     private static void TakeLobbyDataToConfig()
@@ -99,15 +95,15 @@ public partial class Shuv : BaseUnityPlugin {
 
     internal static void Patch()
     {
-        Harmony ??= new Harmony(PLUGIN_GUID);
+        Harmony ??= new Harmony(MyPluginInfo.PLUGIN_GUID);
         
         Harmony.PatchAll();
-        Logger.LogDebug($"Finished patching for {PLUGIN_GUID}!");
+        Logger.LogDebug($"Finished patching for {MyPluginInfo.PLUGIN_GUID}!");
     }
 
     internal static void Unpatch()
     {
         Harmony?.UnpatchSelf();
-        Logger.LogDebug($"Finished unpatching for {PLUGIN_GUID}!");
+        Logger.LogDebug($"Finished unpatching for {MyPluginInfo.PLUGIN_GUID}!");
     }
 }
