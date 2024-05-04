@@ -19,7 +19,7 @@ public class PlayerUpdatePatch {
     private static void CheckForShuvBinding(Player __instance)
     {
         if (!__instance.refs.view.IsMine || __instance.refs == null) return;
-        var alive = __instance.data.health <= 0f || __instance.data.dead;
+        var alive = __instance.data.health > 0f && !__instance.data.dead;
         // Don't allow shoving when dead, we use a '.health' check because the Defibrillator doesn't change '.dead' to false (iirc)
         // If the Defibrillator does change '.dead' to false, feel free to remove the '.health' check
 
