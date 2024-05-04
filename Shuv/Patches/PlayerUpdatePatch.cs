@@ -37,11 +37,12 @@ public class PlayerUpdatePatch {
             var ray = new Ray(__instance.refs.cameraPos.position, __instance.refs.cameraPos.forward);
             // ReSharper disable once Unity.PreferNonAllocApi
             var hits = Physics.RaycastAll(ray, 2f, HelperFunctions.GetMask(HelperFunctions.LayerType.All));
-            
-            var hitPlayer = hits
+
+            Player? hitPlayer = hits
                 .Select(raycastHit => raycastHit.collider.transform.parent.GetComponentInParent<Player>())
-                .FirstOrDefault(curHit => curHit && !curHit.IsLocal);
-            
+                .TakeWhile(potentialPlayer => potentialPlayer && potentialPlayer != null)
+                .FirstOrDefault(potentialPlayer => potentialPlayer && !potentialPlayer.IsLocal);
+
             Shuv.Logger.LogDebug("Trying shove...");
             if (hitPlayer != null && hitPlayer)
             {
