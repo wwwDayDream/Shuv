@@ -4,6 +4,7 @@
     <PropertyGroup>
         <AssemblyName>Shuv</AssemblyName>
         <Product>Shuv</Product>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     </PropertyGroup>
 
     <!-- Project Properties -->
