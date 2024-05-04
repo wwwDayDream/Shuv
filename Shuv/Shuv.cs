@@ -18,7 +18,7 @@ internal static class ShuvConfig {
 }
 
 #if DEBUG
-[ContentWarningPlugin(Shuv.PLUGIN_GUID, Shuv.PLUGIN_VERSION, true)]
+[ContentWarningPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_VERSION, true)]
 #else
 [ContentWarningPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_VERSION, false)]
 #endif
