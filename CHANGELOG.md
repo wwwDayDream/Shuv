@@ -10,3 +10,7 @@ and as of August 2024 this project adheres to [Semantic Versioning](https://semv
 ### Added
 
 - CHANGELOG.md to track changes going forward.
+
+### Changed
+
+- Updated .gitignore to contain *.user files.
